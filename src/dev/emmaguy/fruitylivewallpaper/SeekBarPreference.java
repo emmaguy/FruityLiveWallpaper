@@ -48,6 +48,9 @@ public class SeekBarPreference extends Preference implements OnSeekBarChangeList
 	try {
 	    LayoutInflater mInflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	    layout = (RelativeLayout) mInflater.inflate(R.layout.seekbar_preference, parent, false);
+	    
+	    getPreferenceManager().setSharedPreferencesName(FruityWallpaper.SHARED_PREFS_NAME);
+	    currentValue = getSharedPreferences().getInt(FruityWallpaper.OPACITY_SHARED_PREF_NAME, FruityWallpaper.OPACITY_DEFAULT);
 	} catch (Exception e) {
 	    Log.e("SeekBarPrefs", "Error creating seek bar preference", e);
 	}
@@ -58,7 +61,7 @@ public class SeekBarPreference extends Preference implements OnSeekBarChangeList
     @Override
     public void onBindView(View view) {
 	super.onBindView(view);
-
+	
 	try {
 	    ViewParent oldContainer = seekBar.getParent();
 	    ViewGroup newContainer = (ViewGroup) view.findViewById(R.id.seekBarPrefBarContainer);
@@ -82,7 +85,7 @@ public class SeekBarPreference extends Preference implements OnSeekBarChangeList
 
 	try {
 	    RelativeLayout layout = (RelativeLayout) view;
-
+	    
 	    statusTextView = (TextView) layout.findViewById(R.id.seekBarPrefValue);
 	    statusTextView.setText(String.valueOf(currentValue));
 	    statusTextView.setMinimumWidth(30);
@@ -113,7 +116,7 @@ public class SeekBarPreference extends Preference implements OnSeekBarChangeList
 
 	currentValue = newValue;
 	statusTextView.setText(String.valueOf(newValue));
-
+	
 	getSharedPreferences().edit().putInt(FruityWallpaper.OPACITY_SHARED_PREF_NAME, newValue).commit();
     }
 
@@ -124,14 +127,5 @@ public class SeekBarPreference extends Preference implements OnSeekBarChangeList
     @Override
     public void onStopTrackingTouch(SeekBar seekBar) {
 	notifyChanged();
-    }
-
-    @Override
-    protected void onSetInitialValue(boolean restoreValue, Object defaultValue) {
-
-	getPreferenceManager().setSharedPreferencesName(FruityWallpaper.SHARED_PREFS_NAME);
-	if (restoreValue) {
-	    currentValue = getSharedPreferences().getInt(FruityWallpaper.OPACITY_SHARED_PREF_NAME, FruityWallpaper.OPACITY_DEFAULT);
-	}
     }
 }

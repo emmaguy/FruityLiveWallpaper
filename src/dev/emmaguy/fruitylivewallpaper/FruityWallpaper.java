@@ -15,7 +15,6 @@ import android.os.Handler;
 import android.service.wallpaper.WallpaperService;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
-import android.widget.Toast;
 
 public class FruityWallpaper extends WallpaperService {
 
@@ -57,7 +56,7 @@ public class FruityWallpaper extends WallpaperService {
 		updateFrame();
 	    }
 	};
-	
+
 	private final Runnable drawFruitProjectiles = new Runnable() {
 	    public void run() {
 		drawFrame();
@@ -76,12 +75,12 @@ public class FruityWallpaper extends WallpaperService {
 
 	    SharedPreferences prefs = FruityWallpaper.this.getSharedPreferences(SHARED_PREFS_NAME, 0);
 	    prefs.registerOnSharedPreferenceChangeListener(this);
+	    setPermittedFruits(prefs);
 
-	    for (FruitType f : FruitType.values()) {
-		boolean isFruitPresent = prefs.getBoolean(f.name(), true);
-
-		if (isFruitPresent) {
+	    if (permittedFruits.size() <= 0) {
+		for (FruitType f : FruitType.values()) {
 		    permittedFruits.add(f);
+		    prefs.edit().putBoolean(f.name(), true).commit();
 		}
 	    }
 	}
@@ -200,18 +199,20 @@ public class FruityWallpaper extends WallpaperService {
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
 
-	    Toast.makeText(getApplicationContext(), "key: " + key, Toast.LENGTH_SHORT).show();
-	   
 	    if (key.equals(OPACITY_SHARED_PREF_NAME)) {
 		int opacity = sharedPreferences.getInt(key, OPACITY_DEFAULT);
 		paint.setAlpha(opacity);
 	    } else {
-		permittedFruits.clear();
-		
-		for(FruitType f : FruitType.values()){
-		    if(sharedPreferences.getBoolean(f.toString(), false)){
-			permittedFruits.add(f);
-		    }
+		setPermittedFruits(sharedPreferences);
+	    }
+	}
+
+	private void setPermittedFruits(SharedPreferences sharedPreferences) {
+	    permittedFruits.clear();
+
+	    for (FruitType f : FruitType.values()) {
+		if (sharedPreferences.getBoolean(f.toString(), false)) {
+		    permittedFruits.add(f);
 		}
 	    }
 	}

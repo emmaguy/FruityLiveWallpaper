@@ -18,7 +18,6 @@ import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
-import android.widget.Toast;
 
 public class FruityWallpaperSettingsActivity extends PreferenceActivity implements OnPreferenceChangeListener {
     protected Method loadHeaders = null;
@@ -111,13 +110,8 @@ public class FruityWallpaperSettingsActivity extends PreferenceActivity implemen
     @Override
     public boolean onPreferenceChange(Preference preference, Object newValue) {
 
-
 	boolean includeFruit = Boolean.valueOf(newValue.toString());
 	SharedPreferences prefs = getSharedPreferences(FruityWallpaper.SHARED_PREFS_NAME, 0);
-
-	Toast.makeText(getApplicationContext(), "key: " + preference.getKey() + " val: " + newValue + " o: "+ prefs.getInt(FruityWallpaper.OPACITY_SHARED_PREF_NAME, 12), Toast.LENGTH_SHORT)
-	.show();
-
 	prefs.edit().putBoolean(preference.getKey(), includeFruit).commit();
 
 	return true;
