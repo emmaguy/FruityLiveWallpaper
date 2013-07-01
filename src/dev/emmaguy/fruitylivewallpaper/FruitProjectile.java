@@ -6,7 +6,6 @@ import android.graphics.Paint;
 
 public class FruitProjectile {
 
-    private final Paint paint = new Paint();
     private final Bitmap bitmap;
 
     private final int maxWidth;
@@ -32,10 +31,9 @@ public class FruitProjectile {
 	this.v0x = initialSpeed * Math.cos(angle * Math.PI / 180);
 	this.v0y = initialSpeed * Math.sin(angle * Math.PI / 180);
 	
-	this.paint.setAntiAlias(true);
 	this.bitmapWidth = b.getWidth();
     }
-
+    
     public boolean hasMovedOffScreen() {
 	return yLocation < 0 || xLocation + bitmap.getWidth() < 0 || xLocation > maxWidth;
     }
@@ -55,7 +53,7 @@ public class FruitProjectile {
 	time += 0.1f;
     }
 
-    public void draw(Canvas canvas) {
+    public void draw(Canvas canvas, Paint paint) {
 	canvas.drawBitmap(bitmap, xLocation, absYLocation, paint);
     }
 }

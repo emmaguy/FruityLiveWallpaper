@@ -5,16 +5,23 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.os.Handler;
 import android.service.wallpaper.WallpaperService;
 import android.util.SparseArray;
 import android.view.SurfaceHolder;
+import android.widget.Toast;
 
 public class FruityWallpaper extends WallpaperService {
+
+    public static final String SHARED_PREFS_NAME = "fruitywallpapersettings";
+    public static final int OPACITY_DEFAULT = 255;
+    public static final String OPACITY_SHARED_PREF_NAME = "opacity";
 
     private final Handler mHandler = new Handler();
 
@@ -33,28 +40,31 @@ public class FruityWallpaper extends WallpaperService {
 	return new FruityEngine();
     }
 
-    class FruityEngine extends Engine {
+    class FruityEngine extends Engine implements SharedPreferences.OnSharedPreferenceChangeListener {
 
 	private boolean isVisible;
 	private int maxWidth;
 	private int maxHeight;
 	private int counter = 0;
-	
+
 	private final List<FruitProjectile> fruitProjectiles = new ArrayList<FruitProjectile>();
 	private final SparseArray<Bitmap> bitmapCache;
 	private final Random random = new Random();
-
-	private final Runnable drawFruitProjectiles = new Runnable() {
-	    public void run() {
-		drawFrame();
-	    }
-	};
+	private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
 	private final Runnable updateFruitProjectiles = new Runnable() {
 	    public void run() {
 		updateFrame();
 	    }
 	};
+	
+	private final Runnable drawFruitProjectiles = new Runnable() {
+	    public void run() {
+		drawFrame();
+	    }
+	};
+
+	private List<FruitType> permittedFruits = new ArrayList<FruitType>();
 
 	public FruityEngine() {
 	    bitmapCache = new SparseArray<Bitmap>(FruitType.values().length);
@@ -62,6 +72,17 @@ public class FruityWallpaper extends WallpaperService {
 	    for (FruitType t : FruitType.values()) {
 		bitmapCache.put(t.getResourceId(),
 			BitmapFactory.decodeResource(getResources(), t.getResourceId(), new Options()));
+	    }
+
+	    SharedPreferences prefs = FruityWallpaper.this.getSharedPreferences(SHARED_PREFS_NAME, 0);
+	    prefs.registerOnSharedPreferenceChangeListener(this);
+
+	    for (FruitType f : FruitType.values()) {
+		boolean isFruitPresent = prefs.getBoolean(f.name(), true);
+
+		if (isFruitPresent) {
+		    permittedFruits.add(f);
+		}
 	    }
 	}
 
@@ -147,7 +168,7 @@ public class FruityWallpaper extends WallpaperService {
 		    c.drawARGB(255, 0, 0, 0);
 		    synchronized (fruitProjectiles) {
 			for (FruitProjectile f : fruitProjectiles) {
-			    f.draw(c);
+			    f.draw(c, paint);
 			}
 		    }
 		}
@@ -168,8 +189,31 @@ public class FruityWallpaper extends WallpaperService {
 	    boolean rightToLeft = random.nextBoolean();
 	    float gravity = random.nextInt(6) + 14.0f;
 
-	    return new FruitProjectile(bitmapCache.get(FruitType.randomFruit().getResourceId()), maxWidth, maxHeight,
-		    angle, speed, gravity, rightToLeft);
+	    return new FruitProjectile(bitmapCache.get(getRandomFruit().getResourceId()), maxWidth, maxHeight, angle,
+		    speed, gravity, rightToLeft);
+	}
+
+	private FruitType getRandomFruit() {
+	    return permittedFruits.get(random.nextInt(permittedFruits.size()));
+	}
+
+	@Override
+	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+
+	    Toast.makeText(getApplicationContext(), "key: " + key, Toast.LENGTH_SHORT).show();
+	   
+	    if (key.equals(OPACITY_SHARED_PREF_NAME)) {
+		int opacity = sharedPreferences.getInt(key, OPACITY_DEFAULT);
+		paint.setAlpha(opacity);
+	    } else {
+		permittedFruits.clear();
+		
+		for(FruitType f : FruitType.values()){
+		    if(sharedPreferences.getBoolean(f.toString(), false)){
+			permittedFruits.add(f);
+		    }
+		}
+	    }
 	}
     }
 }

@@ -1,0 +1,20 @@
+<preference-headers xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <header
+        android:fragment="dev.emmaguy.fruitylivewallpaper.FruityWallpaperSettingsActivity$PrefsFragment"
+        android:icon="@android:drawable/ic_menu_agenda"
+        android:title="Select fruit(s)" >
+        <extra
+            android:name="pref-resource"
+            android:value="fruit_selection" />
+    </header>
+    <header
+        android:fragment="dev.emmaguy.fruitylivewallpaper.FruityWallpaperSettingsActivity$PrefsFragment"
+        android:icon="@android:drawable/ic_menu_manage"
+        android:title="Change opacity of fruit" >
+        <extra
+            android:name="pref-resource"
+            android:value="fruit_opacity" />
+    </header>
+
+</preference-headers>
