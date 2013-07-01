@@ -1,12 +1,15 @@
-<PreferenceScreen
-       xmlns:android="http://schemas.android.com/apk/res/android"
-       android:key="preference_screen">
-        
-    <PreferenceCategory android:title="Fruit Opacity">
-        <dev.emmaguy.fruitylivewallpaper.SeekBarPreference
-            android:key="fruitOpacity"
-            android:summary="Adjust opacity of the fruits" />
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    android:key="preference_screen" >
 
+    <PreferenceCategory android:title="Fruit Opacity" xmlns:seekbar="http://robobunny.com/wp/2011/08/13/android-seekbar-preference/">
+        <dev.emmaguy.fruitylivewallpaper.SeekBarPreference
+            android:defaultValue="255"
+            android:key="fruitOpacity"
+            android:summary="Adjust opacity of the fruits"
+            android:max="255"
+            seekbar:min="0"
+            seekbar:unitsLeft=""
+            seekbar:unitsRight="" />
     </PreferenceCategory>
-    
+
 </PreferenceScreen>

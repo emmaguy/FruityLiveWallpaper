@@ -19,9 +19,9 @@ import android.view.SurfaceHolder;
 public class FruityWallpaper extends WallpaperService {
 
     public static final String SHARED_PREFS_NAME = "fruitywallpapersettings";
+    public static final String OPACITY_SHARED_PREF_NAME = "fruitOpacity";
     public static final int OPACITY_DEFAULT = 255;
-    public static final String OPACITY_SHARED_PREF_NAME = "opacity";
-
+    
     private final Handler mHandler = new Handler();
 
     @Override
@@ -83,6 +83,8 @@ public class FruityWallpaper extends WallpaperService {
 		    prefs.edit().putBoolean(f.name(), true).commit();
 		}
 	    }
+	    
+	    onSharedPreferenceChanged(prefs, OPACITY_SHARED_PREF_NAME);
 	}
 
 	@Override
@@ -198,7 +200,6 @@ public class FruityWallpaper extends WallpaperService {
 
 	@Override
 	public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-
 	    if (key.equals(OPACITY_SHARED_PREF_NAME)) {
 		int opacity = sharedPreferences.getInt(key, OPACITY_DEFAULT);
 		paint.setAlpha(opacity);

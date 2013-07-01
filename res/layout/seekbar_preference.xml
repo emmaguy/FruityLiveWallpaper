@@ -8,6 +8,18 @@
     android:paddingTop="5dp" >
 
     <TextView
+        android:id="@android:id/title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:textColor="#ffffff"
+        android:textSize="22sp"
+        android:textStyle="normal"
+        android:typeface="sans" >
+    </TextView>
+
+    <TextView
         android:id="@android:id/summary"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
